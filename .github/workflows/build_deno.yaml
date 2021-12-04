@@ -40,3 +40,14 @@ jobs:
       - name: lint
         if: ${{ !inputs.config }}
         run: deno lint
+
+      - run: deno test -A --coverage=cov --unstable
+
+      - if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: deno coverage --lcov cov > cov.lcov
+
+      - if: ${{ matrix.os == 'ubuntu-20.04' }}
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: cov.lcov
